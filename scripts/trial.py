@@ -34,7 +34,11 @@ HOOK_SETTINGS = {
         ]
     }
 }
-ALLOWED_TOOLS = "Read Grep Glob Edit Write Bash(npm run check:env) Bash(npm run --silent check:env) Bash(git status) Bash(git diff *) Bash(ls *)"
+ALLOWED_TOOLS = [
+    "Read", "Grep", "Glob", "Edit", "Write",
+    "Bash(npm run check:env)", "Bash(npm run --silent check:env)",
+    "Bash(git status)", "Bash(git diff *)", "Bash(ls *)",
+]
 GIT_ID = ["-c", "user.name=harness-exp", "-c", "user.email=harness-exp@example.invalid"]
 
 
@@ -115,7 +119,7 @@ def run(run_id: str) -> None:
         "--strict-mcp-config",
         "--permission-mode", "acceptEdits",
         "--permission-prompts", "none",
-        "--allowedTools", *ALLOWED_TOOLS.split(" "),
+        "--allowedTools", ",".join(ALLOWED_TOOLS),
         "--output-format", "stream-json", "--verbose", "--include-hook-events",
         "--no-session-persistence",
     ]

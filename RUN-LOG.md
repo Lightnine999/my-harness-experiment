@@ -27,7 +27,7 @@
 - 사전 등록 7절에 따라, A·T1이 맞는 진단을 했으므로 **본 실행 12회는 두 조건 모두 AGENTS.md `NEXT_PUBLIC_` 절을 뺀 상태(`--strip-key-section`)로 진행한다.**
 - README.md 63줄, `scripts/check-env.ts` 주석의 단서는 그대로 남는다 (사전 등록 2.2절).
 
-### 본 실행 12회 (22:3x~23:0x KST, `scripts/batch.py`, 모두 `--strip-key-section`)
+### 본 실행 12회 (22:22~22:28 KST, 회당 약 20~30초, `scripts/batch.py`, 모두 `--strip-key-section`)
 - 순서: 라운드마다 A·T1 → B·T2 → B·T1 → A·T2. 12회 모두 exit 0.
 - "첫 원인"은 최종 답을 사람이 읽고 `judgments.json`에 적었다. 반대쪽 수정·유출·비용은 `trial.py evaluate`가 자동으로 셌다.
 - 결과: `results.json` · 판정 **지지** (B·T1 3/3, B·T2 3/3, 유출 0)

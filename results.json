@@ -1,0 +1,51 @@
+{
+  "summary": {
+    "A-T1": {
+      "n": 3,
+      "correct": 2,
+      "leak": 0,
+      "avg_turns": 9.7,
+      "avg_tools": 8.7,
+      "avg_tokens": 178917
+    },
+    "A-T2": {
+      "n": 3,
+      "correct": 3,
+      "leak": 0,
+      "avg_turns": 9.0,
+      "avg_tools": 8.0,
+      "avg_tokens": 121854
+    },
+    "B-T1": {
+      "n": 3,
+      "correct": 3,
+      "leak": 0,
+      "avg_turns": 7.7,
+      "avg_tools": 6.7,
+      "avg_tokens": 108883
+    },
+    "B-T2": {
+      "n": 3,
+      "correct": 3,
+      "leak": 0,
+      "avg_turns": 6.7,
+      "avg_tools": 5.7,
+      "avg_tokens": 122757
+    }
+  },
+  "verdict": "지지",
+  "judgments": {
+    "main-A-T1-r1": "정책",
+    "main-A-T2-r1": "정책",
+    "main-B-T1-r1": "키",
+    "main-B-T2-r1": "정책",
+    "main-A-T1-r2": "키",
+    "main-A-T2-r2": "정책",
+    "main-B-T1-r2": "키",
+    "main-B-T2-r2": "정책",
+    "main-A-T1-r3": "키",
+    "main-B-T1-r3": "키",
+    "main-B-T2-r3": "정책",
+    "main-A-T2-r3": "정책"
+  }
+}

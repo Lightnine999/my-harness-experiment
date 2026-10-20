@@ -1,6 +1,6 @@
 # experiment-01 — 검사 도구는 있었는데, 에이전트는 보지 않았다
 
-모두의연구소 AIFFEL 「AI 에이전트 1기」 · 「[프로젝트] 에이전트 하네스 톺아보기」
+모두의연구소 AIFFEL 「AI 에이전트 2기」 · 「[프로젝트] 에이전트 하네스 톺아보기」
 
 기준 도구: **Claude Code** (CLI, 모델 `claude-sonnet-5-5`)
 대상 프로젝트: IR 자료 생성 서비스 (`Web_Development`, Next.js 16 + Supabase)

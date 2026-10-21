@@ -124,7 +124,8 @@ T1만 두면 "훅이 무조건 키 탓을 하게 만들었다"는 착시를 걸�
 - 사본마다 `git archive`로 새 저장소를 만들었습니다. 원본의 커밋 이력(사건이 적힌 커밋 메시지)은 들어가지 않습니다.
 - `--setting-sources project`로 사용자 설정·훅을 뺐습니다. `--strict-mcp-config`로 MCP 서버를 0개로 만들어 진짜 Supabase에 연결되지 않게 했습니다.
 - 시범 실행의 초기화 기록에서 로드된 플러그인은 내장 4종뿐이었고, 사용자가 설치한 플러그인과 훅은 없었습니다.
-- 진짜 키는 어디에도 쓰지 않았습니다. 가짜 키와 실행 원문은 기록 저장소에 커밋하지 않았습니다.
+- 진짜 키는 어디에도 쓰지 않았습니다. 가짜 키와 실행 원문 JSON은 커밋하지 않았습니다. `traces/`에는 가짜 키와 로컬 경로를 지운 기록만 넣었습니다.
+- **키 종류를 알 수 있는 경로는 `check:env`뿐이었습니다.** 실행 기록 12건을 모두 검사했고, `.env.local`의 키 값(접두사 포함)이 에이전트에게 보인 적은 한 번도 없었습니다. `.env.local`을 건드린 호출은 에이전트가 `sed`로 값을 가렸거나 권한 단계에서 거부됐습니다.
 
 ---
 
@@ -184,7 +185,7 @@ B 조건 실행 기록의 첫 이벤트에 `SessionStart` 훅 응답이 남아 �
 | B (훅 있음) | T2 정책 | 3 / 3 | 0 | 0 | 6.7 | 5.7 | 122,757 |
 
 - 토큰은 입력, 캐시 생성, 캐시 읽기, 출력 토큰을 모두 더한 값입니다.
-- 실행별 원자료는 `results.json`, `judgments.json`, `RUN-LOG.md`에 있습니다.
+- 실행별 기록은 `traces/before/`(A), `traces/after/`(B)에 있고, 집계는 `traces/results.json`, 사람 판정은 `traces/judgments.json`에 있습니다.
 
 ### 판정: **가설 지지**
 
@@ -259,7 +260,7 @@ T2에서 새 마이그레이션(`0004`)을 추가하면서 **이미 적용된 `0
 git -C ~/Web_Development worktree add --detach ~/harness-exp/ir-base 4552c90
 
 # 2. 시행 1회 준비 · 실행 · 채점
-cd ~/harness-exp/ir-record/scripts
+cd fixture/scripts
 python3 trial.py prepare <run_id> <A|B> <T1|T2> --strip-key-section
 python3 trial.py run <run_id>
 python3 trial.py evaluate <run_id>
@@ -267,7 +268,12 @@ python3 trial.py evaluate <run_id>
 # 3. 본 실행 12회 일괄 / 결과 집계
 python3 batch.py
 python3 summarize.py --final
+
+# 4. 제출용 기록으로 옮기기 (가짜 키·로컬 경로 삭제)
+python3 export_traces.py
 ```
+
+입력 원본(기준 커밋, 가짜 환경 파일, T2 정책 변경, 훅 설정, 요청 문장)은 `fixture/`에 있습니다.
 
 전제: Claude Code CLI 로그인, `~/Web_Development/node_modules` 설치(사본에 심볼릭 링크로 연결).
 본 실행 12회는 약 5분 걸렸습니다(회당 20~30초). 응답은 매번 조금씩 다를 수 있습니다.
@@ -279,7 +285,8 @@ python3 summarize.py --final
 - **선택 도구**: Claude Code. 실제 오진이 이 도구에서 일어났고, 개선 수단인 `SessionStart` 훅이 이 도구의 기능이기 때문입니다.
 - **확인한 경계**
   - `--setting-sources project`, `--strict-mcp-config`로 사용자 설정과 MCP를 뺄 수 있었습니다.
-  - 허용 목록 밖의 셸 명령은 `--permission-prompts none`으로 확인 창 없이 거부됐습니다. 일부 실행이 `.env.local`을 직접 읽으려다 거부된 기록이 있습니다.
+  - 허용 목록 밖의 셸 명령이 섞인 복합 명령은 `--permission-prompts none`으로 확인 창 없이 거부됐습니다 (예: `grep … ; git check-ignore .env.local`).
+  - **예상과 달랐던 점**: `cat`·`sed`·`head` 같은 읽기 전용 명령은 허용 목록에 없어도 `ls`로 시작하는 복합 명령 안에서 실행됐습니다. 사전 등록 2.1절의 "그 밖의 셸 명령은 거부된다"는 설명은 정확하지 않았습니다. 이 동작은 A와 B에 똑같이 적용됐으므로 조건 사이의 차이를 만들지는 않았습니다. 위 4절처럼 키 값이 에이전트에게 보인 적은 없습니다.
 - **실험 중 고친 것**
   - 첫 시범 실행이 실행 스크립트의 인자 전달 버그로 모델 호출 전에 멈췄습니다.
   - 허용 도구를 공백으로 나눠 넘긴 것이 원인이었고, 쉼표로 이어 넘기도록 고쳤습니다. 허용 도구의 내용은 바뀌지 않았습니다 (커밋 `8844644`).
@@ -291,9 +298,11 @@ python3 summarize.py --final
 
 | 파일 | 내용 |
 |---|---|
-| `PRE-REGISTRATION.md` | 사전 등록. 커밋 `6a5a5f7`에 고정 |
-| `RUN-LOG.md` | 점검, 시범, 본 실행 기록과 관찰 |
-| `results.json` · `judgments.json` | 집계 결과와 사람 판정 |
-| `scripts/trial.py` · `batch.py` · `summarize.py` | 준비·실행·채점, 일괄 실행, 집계 |
+| `README.md` | 가설, 설계, 결과, 다시 검토할 조건 요약 |
+| `fixture/` | 고정한 작업 입력 원본, 사전 등록(`PRE-REGISTRATION.md`), 실행 스크립트 |
+| `traces/before/` · `traces/after/` · `traces/pilot/` | 수정 전(A)·수정 후(B)·시범 실행 기록 |
+| `traces/RUN-LOG.md` | 점검, 시범, 본 실행 기록과 관찰 |
+| `traces/results.json` · `traces/judgments.json` | 집계 결과와 사람 판정 |
 
-커밋: `6a5a5f7` 사전 등록 → `8844644` 점검·시범 → `d0358a7` 본 실행 결과
+커밋: `6a5a5f7` 사전 등록 → `8844644` 점검·시범 → `d0358a7` 본 실행 결과 → 이후 보고서·제출 구조 정리
+(사전 등록 커밋은 파일을 `fixture/`로 옮기기 전 위치에 있습니다. `git show 6a5a5f7:PRE-REGISTRATION.md`로 고정 당시 내용을 볼 수 있습니다.)

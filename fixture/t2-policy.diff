@@ -1,0 +1,6 @@
+--- a/supabase/migrations/0001_init.sql
++++ b/supabase/migrations/0001_init.sql
+@@ -14,2 +14,2 @@
+ create policy "decks_select_own" on public.decks
+-  for select using (auth.uid() = user_id);
++  for select using (true);

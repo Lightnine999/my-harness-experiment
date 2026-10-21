@@ -1,0 +1,6 @@
+# T2 정책 문제 — 키는 정상(publishable 형식의 가짜 키)
+# 실제 시행에서는 <random> 자리에 secrets.token_urlsafe(24)로 만든 무작위 문자열이 들어갔다.
+NEXT_PUBLIC_SUPABASE_URL=https://example-fake.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_<random>
+BACKEND_URL=http://localhost:8787
+BACKEND_SECRET=<random-hex>

@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 META = Path.home() / "harness-exp" / "ir-runs-meta"
-RECORD = Path(__file__).resolve().parent.parent
+RECORD = Path(__file__).resolve().parents[2] / "traces"
 JUDGE = RECORD / "judgments.json"
 
 
